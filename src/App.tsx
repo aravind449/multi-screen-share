@@ -7,14 +7,14 @@ import { mapAppStateToProps } from "./mapStateToProps";
 import { AppProps } from "./propsInterface";
 import { constraints } from "./constants";
 import Home from "./Components/Home";
+import GlobalRefsCustom from "./GlobalRefsCustom";
 
 function App(props: AppProps) {
   // these are props that can't set in redux
   const currentUserVideoRef = useRef<any | null>(null);
   const remoteUserVideoRef = useRef<any | null>(null);
-  const peerInstance = useRef<Peer | null>(null);
-  const globalScreens = useRef<any[]>([]);
-  const remoteConnection = useRef<any | null>(null);
+
+  const params = GlobalRefsCustom();
 
   useEffect(() => {
     const peer = new Peer();
@@ -24,34 +24,41 @@ function App(props: AppProps) {
       props.setLoading(false);
     });
     peer.on("connection", (conn) => {
-      onConnection(globalScreens, peerInstance, conn, props, remoteConnection);
+      params.setRemoteConnection(conn);
+      onConnection(
+        params.globalScreens,
+        params.peerInstance,
+        conn,
+        props,
+        params.remoteConnection
+      );
     });
     peer.on("call", (call) => {
       onCall(addRemotePeerId, call, remoteUserVideoRef);
     });
 
-    peerInstance.current = peer;
+    params.setPeerInstance(peer);
 
     return () => {
-      if (peerInstance.current) {
-        peerInstance.current.destroy();
+      if (params.peerInstance.current) {
+        params.peerInstance.current.destroy();
       }
     };
   }, []);
 
   const playVideo = (channel: string) => {
-    remoteConnection.current!.send({ channel });
+    params.remoteConnection.current!.send({ channel });
   };
   const connectToPeer = (remotePeerId: string) => {
-    const remoteConn = peerInstance.current!.connect(remotePeerId);
-    remoteConnection.current = remoteConn;
+    const remoteConn = params.peerInstance.current!.connect(remotePeerId);
+    params.setRemoteConnection(remoteConn);
   };
 
   const startScreenShare = (screenName: string) => {
     navigator.mediaDevices
       .getDisplayMedia(constraints)
       .then((screenStream) => {
-        globalScreens.current.push(
+        params.setGlobalScreens(
           processInputStream(screenStream, screenName, currentUserVideoRef)
         );
       })
@@ -72,7 +79,7 @@ function App(props: AppProps) {
         playVideo={playVideo}
         currentUserVideoRef={currentUserVideoRef}
         remoteUserVideoRef={remoteUserVideoRef}
-        dataConnection={remoteConnection}
+        dataConnection={params.remoteConnection}
       ></Home>
     </div>
   );

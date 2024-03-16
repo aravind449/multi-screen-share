@@ -17,7 +17,6 @@ export const toggleFullScreen = (videoRef: any) => {
   export function onConnection(globalScreens: any, peerInstance: any, conn: any, props: AppProps, remoteConnection: any) {
     shareVideoToUser("youtube", globalScreens, peerInstance, conn);
     props.setConnectionStatus(true);
-    remoteConnection.current = conn;
     remoteConnection.current.on("data", (data: any) => {
       shareVideoToUser(data, globalScreens, peerInstance, conn);
     });
