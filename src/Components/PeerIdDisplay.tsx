@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { RootState } from "../store/reducers/rootReducer";
 import { PeerIdDisplayProps } from "../propsInterface";
 import { mapPeerIdStateToProps } from "../mapStateToProps";
 

@@ -1,7 +1,5 @@
 import React from "react";
-import { RootState } from "../store/reducers/rootReducer";
 import { connect } from "react-redux";
-import { setRemotePeerIdValue } from "../store/actions/appActions";
 import { RemotePeerConnectionProps } from "../propsInterface";
 import { mapRemoteConnDispatchToProps } from "../mapDispatchToProps";
 import { mapRemoteConnStateToProps } from "../mapStateToProps";

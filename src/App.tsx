@@ -1,25 +1,19 @@
 import { useEffect, useRef } from "react";
 import Peer from "peerjs";
-
-// Import components
-import PeerIdDisplay from "./Components/PeerIdDisplay";
-import RemotePeerConnection from "./Components/RemotePeerConnection";
-import ScreenShareInput from "./Components/ScreenShareInput";
-import AdditionalActions from "./Components/AdditionalActions";
-import VideoDisplay from "./Components/VideoDisplay";
-import Chat from "./Components/Chat";
-
 import { connect } from "react-redux";
-import { shareVideoToUser } from "./helperFunctions";
+import { onCall, onConnection, processInputStream } from "./helperFunctions";
 import { mapAppDispatchToProps } from "./mapDispatchToProps";
 import { mapAppStateToProps } from "./mapStateToProps";
 import { AppProps } from "./propsInterface";
+import { constraints } from "./constants";
+import Home from "./Components/Home";
 
 function App(props: AppProps) {
+  // these are props that can't set in redux
   const currentUserVideoRef = useRef<any | null>(null);
   const remoteUserVideoRef = useRef<any | null>(null);
   const peerInstance = useRef<Peer | null>(null);
-  const globalScreens2 = useRef<any[]>([]);
+  const globalScreens = useRef<any[]>([]);
   const remoteConnection = useRef<any | null>(null);
 
   useEffect(() => {
@@ -30,21 +24,10 @@ function App(props: AppProps) {
       props.setLoading(false);
     });
     peer.on("connection", (conn) => {
-      shareVideoToUser("youtube", globalScreens2, peerInstance, conn);
-      props.setConnectionStatus(true);
-      remoteConnection.current = conn;
-      remoteConnection.current.on("data", (data: any) => {
-        shareVideoToUser(data, globalScreens2, peerInstance, conn);
-      });
+      onConnection(globalScreens, peerInstance, conn, props, remoteConnection);
     });
     peer.on("call", (call) => {
-      addRemotePeerId(call.peer);
-      call.answer();
-      call.on("stream", (remoteStream) => {
-        remoteUserVideoRef.current!.srcObject = remoteStream;
-        remoteUserVideoRef.current!.autoplay = true;
-        remoteUserVideoRef.current!.playsInline = true;
-      });
+      onCall(addRemotePeerId, call, remoteUserVideoRef);
     });
 
     peerInstance.current = peer;
@@ -66,21 +49,11 @@ function App(props: AppProps) {
 
   const startScreenShare = (screenName: string) => {
     navigator.mediaDevices
-      .getDisplayMedia({
-        video: true,
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-          // systemAudio: "include",
-        },
-      })
+      .getDisplayMedia(constraints)
       .then((screenStream) => {
-        let trackValue: any = screenStream;
-        trackValue.uniqueId = screenName;
-        globalScreens2.current.push(trackValue);
-        currentUserVideoRef.current!.srcObject = trackValue;
-        currentUserVideoRef.current!.play();
+        globalScreens.current.push(
+          processInputStream(screenStream, screenName, currentUserVideoRef)
+        );
       })
       .catch((err) => {
         console.error("Error accessing screen sharing:", err);
@@ -93,19 +66,14 @@ function App(props: AppProps) {
 
   return (
     <div className="App">
-      <h1>Screen Sharing App</h1>
-      <PeerIdDisplay />
-      <RemotePeerConnection connectToPeer={connectToPeer} />
-      <ScreenShareInput startScreenShare={startScreenShare} />
-      <AdditionalActions
+      <Home
+        connectToPeer={connectToPeer}
         startScreenShare={startScreenShare}
         playVideo={playVideo}
-      />
-      <VideoDisplay
         currentUserVideoRef={currentUserVideoRef}
         remoteUserVideoRef={remoteUserVideoRef}
-      />
-      <Chat dataConnection={remoteConnection} />
+        dataConnection={remoteConnection}
+      ></Home>
     </div>
   );
 }

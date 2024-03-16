@@ -1,7 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setScreenName } from "../store/actions/appActions";
-import { RootState } from "../store/reducers/rootReducer";
 import { ScreenShareInputProps } from "../propsInterface";
 import { mapScreenShareDispatchToProps } from "../mapDispatchToProps";
 import { mapScreenShareStateToProps } from "../mapStateToProps";
