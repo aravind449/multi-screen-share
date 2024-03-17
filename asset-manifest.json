@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/multi-screen-share/static/css/main.4f047a83.css",
+    "main.js": "/multi-screen-share/static/js/main.eb42cf68.js",
+    "static/js/453.e1bc7043.chunk.js": "/multi-screen-share/static/js/453.e1bc7043.chunk.js",
+    "index.html": "/multi-screen-share/index.html",
+    "main.4f047a83.css.map": "/multi-screen-share/static/css/main.4f047a83.css.map",
+    "main.eb42cf68.js.map": "/multi-screen-share/static/js/main.eb42cf68.js.map",
+    "453.e1bc7043.chunk.js.map": "/multi-screen-share/static/js/453.e1bc7043.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4f047a83.css",
+    "static/js/main.eb42cf68.js"
+  ]
+}
