@@ -14,17 +14,15 @@ function VideoDisplay({
   };
 
   return (
-    <div className="video-container">
-      <div className="local-video">
+    <div>
+      {/* <div className="local-video">
         <label>Your Screen:</label>
         <video ref={currentUserVideoRef} autoPlay muted playsInline />
         <button onClick={toggleFullScreenCurrent}>Toggle Full Screen</button>
-      </div>
-      <div className="remote-videos">
-        <label>Remote Screens:</label>
-        <video ref={remoteUserVideoRef} />
-        <button onClick={toggleFullScreenRemote}>Toggle Full Screen</button>
-      </div>
+      </div> */}
+      <label>Remote Screens:</label>
+      <video ref={remoteUserVideoRef} />
+      <button onClick={toggleFullScreenRemote}>Toggle Full Screen</button>
     </div>
   );
 }

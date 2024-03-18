@@ -47,6 +47,7 @@ function App(props: AppProps) {
   }, []);
 
   const playVideo = (channel: string) => {
+    console.log("send...");
     params.remoteConnection.current!.send({ channel });
   };
   const connectToPeer = (remotePeerId: string) => {

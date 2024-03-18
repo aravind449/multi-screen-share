@@ -18,6 +18,7 @@ export const toggleFullScreen = (videoRef: any) => {
     shareVideoToUser("youtube", globalScreens, peerInstance, conn);
     props.setConnectionStatus(true);
     remoteConnection.current.on("data", (data: any) => {
+      console.log("on data......",data)
       shareVideoToUser(data, globalScreens, peerInstance, conn);
     });
   }
@@ -42,6 +43,7 @@ export function shareVideoToUser(
   peerInstance: any,
   conn: any
 ) {
+  console.log("all screens...",globalScreens)
   globalScreens.current.forEach((tracksVA: any) => {
     if (tracksVA.uniqueId === data.channel) {
       peerInstance.current!.call(conn.peer, tracksVA);
@@ -51,8 +53,9 @@ export function shareVideoToUser(
 
 export function processInputStream(screenStream: MediaStream, screenName: string, currentUserVideoRef: any) {
     let trackValue: any = screenStream;
+    console.log("video...",trackValue)
     trackValue.uniqueId = screenName;
-    currentUserVideoRef.current!.srcObject = trackValue;
-    currentUserVideoRef.current!.play();
+   // currentUserVideoRef.current!.srcObject = trackValue;
+   // currentUserVideoRef.current!.play();
     return trackValue;
   }

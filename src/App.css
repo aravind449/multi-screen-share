@@ -60,7 +60,9 @@ video {
   animation: spin 1s linear infinite;
   margin: 0 auto; /* Center the spinner */
 }
-
+.center{
+  text-align: center;
+}
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
